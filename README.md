@@ -1,2 +1,2 @@
 # auth-service
-Authorization service for the package tracking sistem
+Authorization service for the package tracking system
