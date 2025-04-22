@@ -1,7 +1,7 @@
 package com.tfg.auth.infrastructure.adapters.persistence.adapter;
 
+import com.tfg.auth.domain.models.AppUser;
 import com.tfg.auth.domain.models.Role;
-import com.tfg.auth.domain.models.User;
 import com.tfg.auth.domain.ports.UserRepositoryPort;
 import com.tfg.auth.infrastructure.adapters.persistence.mapper.RoleMapper;
 import com.tfg.auth.infrastructure.adapters.persistence.mapper.UserMapper;
@@ -22,7 +22,7 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     private final RoleRepository roleRepository;
 
     @Override
-    public Optional<User> findByEmail(String email) {
+    public Optional<AppUser> findByEmail(String email) {
         return userRepository.findByEmail(email).map(doc -> {
             List<Role> roles = doc.getRoleNames().stream()
                     .map(roleRepository::findById)
@@ -40,10 +40,10 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
-    public User save(User user) {
+    public AppUser save(AppUser appUser) {
         return UserMapper.toDomain(
-                userRepository.save(UserMapper.toDocument(user)),
-                List.copyOf(user.getRoles())
+                userRepository.save(UserMapper.toDocument(appUser)),
+                List.copyOf(appUser.getRoles())
         );
     }
 }

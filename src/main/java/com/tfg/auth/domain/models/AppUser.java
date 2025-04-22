@@ -11,7 +11,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class AppUser {
     private String email;
     private String password;
     private boolean enabled;
