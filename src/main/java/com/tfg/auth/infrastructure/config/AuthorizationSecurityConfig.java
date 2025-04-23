@@ -47,12 +47,21 @@ public class AuthorizationSecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain authSecurityFilterChain(HttpSecurity http) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .oidc(Customizer.withDefaults());
-        http.exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login")))
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+                new OAuth2AuthorizationServerConfigurer();
+
+        http
+                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                );
+
+        http.with(authorizationServerConfigurer, (configurer) -> {
+            configurer.oidc(Customizer.withDefaults());
+        });
+
         return http.build();
     }
 
