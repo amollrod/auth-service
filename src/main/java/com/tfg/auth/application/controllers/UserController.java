@@ -1,30 +1,49 @@
 package com.tfg.auth.application.controllers;
 
-import com.tfg.auth.domain.models.AppUser;
-import com.tfg.auth.domain.models.Capability;
-import com.tfg.auth.domain.models.Role;
-import com.tfg.auth.application.dto.UserMeResponse;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.tfg.auth.application.dto.CreateUserRequest;
+import com.tfg.auth.application.dto.UpdateUserRequest;
+import com.tfg.auth.application.dto.UserResponse;
+import com.tfg.auth.application.services.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RestController
-@RequestMapping("/me")
+@RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
+    private final UserService userService;
+
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
+        return ResponseEntity.ok(userService.createUser(request));
+    }
+
     @GetMapping
-    public UserMeResponse getCurrentUser(@AuthenticationPrincipal AppUser appUser) {
-        Set<String> roles = appUser.getRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toSet());
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 
-        Set<String> capabilities = appUser.getRoles().stream()
-                .flatMap(role -> role.getCapabilities().stream())
-                .map(Capability::name)
-                .collect(Collectors.toSet());
+    @GetMapping("/{email}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable String email) {
+        return ResponseEntity.ok(userService.getUser(email));
+    }
 
-        return new UserMeResponse(appUser.getEmail(), roles, capabilities);
+    @PutMapping("/{email}")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable String email,
+            @RequestBody @Valid UpdateUserRequest request
+    ) {
+        return ResponseEntity.ok(userService.updateUser(email, request));
+    }
+
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String email) {
+        userService.deleteUser(email);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,17 +1,43 @@
 package com.tfg.auth.domain.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 @Getter
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
+@Builder
 public class Role {
-    private String name;
-    private Set<Capability> capabilities;
+
+    @NonNull
+    private final String name;
+
+    @Builder.Default
+    private Set<Capability> capabilities = EnumSet.noneOf(Capability.class);
+
+    public boolean hasCapability(Capability cap) {
+        return capabilities.contains(cap);
+    }
+
+    public void addCapability(Capability cap) {
+        if (cap != null) {
+            capabilities.add(cap);
+        }
+    }
+
+    public void removeCapability(Capability cap) {
+        capabilities.remove(cap);
+    }
+
+    public void clearCapabilities() {
+        capabilities.clear();
+    }
+
+    public void setCapabilities(Set<Capability> newCapabilities) {
+        if (newCapabilities.isEmpty())
+            clearCapabilities();
+        this.capabilities = EnumSet.copyOf(newCapabilities);
+    }
 }

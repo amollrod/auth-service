@@ -10,4 +10,5 @@ public interface RoleRepositoryPort {
     List<Role> findAll();
     Role save(Role role);
     boolean existsByName(String name);
+    void deleteByName(String name);
 }

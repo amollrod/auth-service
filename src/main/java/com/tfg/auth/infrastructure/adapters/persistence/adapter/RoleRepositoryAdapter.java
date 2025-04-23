@@ -39,4 +39,9 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
     public boolean existsByName(String name) {
         return roleRepository.existsById(name);
     }
+
+    @Override
+    public void deleteByName(String name) {
+        roleRepository.deleteById(name);
+    }
 }

@@ -22,6 +22,21 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     private final RoleRepository roleRepository;
 
     @Override
+    public List<AppUser> findAll() {
+        return userRepository.findAll().stream()
+                .map(doc -> {
+                    List<Role> roles = doc.getRoleNames().stream()
+                            .map(roleRepository::findById)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .map(RoleMapper::toDomain)
+                            .collect(Collectors.toList());
+                    return UserMapper.toDomain(doc, roles);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<AppUser> findByEmail(String email) {
         return userRepository.findByEmail(email).map(doc -> {
             List<Role> roles = doc.getRoleNames().stream()
@@ -45,5 +60,10 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
                 userRepository.save(UserMapper.toDocument(appUser)),
                 List.copyOf(appUser.getRoles())
         );
+    }
+
+    @Override
+    public void deleteByEmail(String email) {
+        userRepository.deleteByEmail(email);
     }
 }
