@@ -7,6 +7,7 @@ import com.tfg.auth.application.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,21 +19,25 @@ public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('CREATE_USER')")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @PreAuthorize("hasAuthority('VIEW_USERS')")
     @GetMapping("/{email}")
     public ResponseEntity<UserResponse> getUser(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUser(email));
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
     @PutMapping("/{email}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable String email,
@@ -41,6 +46,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(email, request));
     }
 
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable String email) {
         userService.deleteUser(email);

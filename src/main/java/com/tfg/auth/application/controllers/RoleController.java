@@ -7,6 +7,7 @@ import com.tfg.auth.application.services.RoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,11 +19,13 @@ public class RoleController {
 
     private final RoleService roleService;
 
+    @PreAuthorize("hasAuthority('CREATE_ROLE')")
     @PostMapping
     public ResponseEntity<RoleResponse> createRole(@RequestBody @Valid CreateRoleRequest request) {
         return ResponseEntity.ok(roleService.createRole(request));
     }
 
+    @PreAuthorize("hasAuthority('UPDATE_ROLE')")
     @PutMapping("/{name}")
     public ResponseEntity<RoleResponse> updateRole(
             @PathVariable String name,
@@ -31,16 +34,19 @@ public class RoleController {
         return ResponseEntity.ok(roleService.updateRole(name, request));
     }
 
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping
     public ResponseEntity<List<RoleResponse>> getAllRoles() {
         return ResponseEntity.ok(roleService.getAllRoles());
     }
 
+    @PreAuthorize("hasAuthority('VIEW_ROLES')")
     @GetMapping("/{name}")
     public ResponseEntity<RoleResponse> getRole(@PathVariable String name) {
         return ResponseEntity.ok(roleService.getRole(name));
     }
 
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     @DeleteMapping("/{name}")
     public ResponseEntity<Void> deleteRole(@PathVariable String name) {
         roleService.deleteRole(name);
