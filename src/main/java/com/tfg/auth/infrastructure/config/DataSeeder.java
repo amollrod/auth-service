@@ -61,10 +61,7 @@ public class DataSeeder {
         if (!roleRepository.existsByName(ADMIN_ROLE_NAME)) {
             roleRepository.save(Role.builder()
                     .name(ADMIN_ROLE_NAME)
-                    .capabilities(Set.of(
-                            Capability.CREATE_PACKAGE,
-                            Capability.UPDATE_STATUS
-                    ))
+                    .capabilities(Set.of(Capability.values()))
                     .build());
         }
 

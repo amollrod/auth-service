@@ -24,8 +24,8 @@ public class MongoUserDetailsService implements UserDetailsService {
     private final RoleRepository roleRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDocument user = userRepository.findByEmail(username)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserDocument user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Set<String> capabilities = user.getRoleNames().stream()
