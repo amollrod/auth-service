@@ -6,12 +6,12 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.tfg.auth.infrastructure.adapters.security.MongoUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,6 +43,15 @@ import java.util.UUID;
 @Configuration
 @Slf4j
 public class AuthorizationSecurityConfig {
+
+    @Value("${auth.client.redirect-uri}")
+    private String redirectUri;
+
+    @Value("${auth.issuer.host}")
+    private String issuerHost;
+
+    @Value("${server.port}")
+    private int serverPort;
 
     @Bean
     @Order(1)
@@ -98,11 +107,11 @@ public class AuthorizationSecurityConfig {
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("client")
+                .clientId("parceltrust-client")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("https://oauthdebugger.com/debug")
+                .redirectUri(redirectUri)
                 .scope("openid")
                 .scope("read")
                 .scope("write")
@@ -114,7 +123,8 @@ public class AuthorizationSecurityConfig {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().issuer("http://localhost:8082").build();
+        String issuer = "http://" + issuerHost + ":" + serverPort;
+        return AuthorizationServerSettings.builder().issuer(issuer).build();
     }
 
     @Bean
