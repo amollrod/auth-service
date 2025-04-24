@@ -4,6 +4,7 @@ import com.tfg.auth.application.dto.CreateRoleRequest;
 import com.tfg.auth.application.dto.UpdateRoleRequest;
 import com.tfg.auth.application.dto.RoleResponse;
 import com.tfg.auth.application.mapper.RoleMapper;
+import com.tfg.auth.domain.models.Capability;
 import com.tfg.auth.domain.models.Role;
 import com.tfg.auth.domain.services.RoleDomainService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,18 @@ public class RoleService {
     public RoleResponse updateRole(String name, UpdateRoleRequest request) {
         Role updated = roleDomainService.updateRole(name, request.getCapabilities());
         return RoleMapper.toResponse(updated);
+    }
+
+    public RoleResponse addCapability(String name, Capability capability) {
+        return RoleMapper.toResponse(roleDomainService.addCapabilityToRole(name, capability));
+    }
+
+    public RoleResponse removeCapability(String name, Capability capability) {
+        return RoleMapper.toResponse(roleDomainService.removeCapabilityFromRole(name, capability));
+    }
+
+    public RoleResponse clearCapabilities(String name) {
+        return RoleMapper.toResponse(roleDomainService.clearCapabilities(name));
     }
 
     public RoleResponse getRole(String name) {
