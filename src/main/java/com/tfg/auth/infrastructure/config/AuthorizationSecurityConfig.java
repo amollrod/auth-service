@@ -51,6 +51,9 @@ public class AuthorizationSecurityConfig {
     @Value("${auth.client.redirect-uri}")
     private String redirectUri;
 
+    @Value("${auth.client.silent-redirect-uri}")
+    private String silentRedirectUri;
+
     @Value("${auth.issuer.host}")
     private String issuerHost;
 
@@ -131,6 +134,7 @@ public class AuthorizationSecurityConfig {
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .redirectUri(redirectUri)
+                .redirectUri(silentRedirectUri)
                 .scope("openid")
                 .scope("read")
                 .scope("write")
