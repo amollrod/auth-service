@@ -32,12 +32,16 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.UUID;
 
 @Configuration
@@ -63,6 +67,7 @@ public class AuthorizationSecurityConfig {
                 .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 );
@@ -82,8 +87,22 @@ public class AuthorizationSecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 )
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .formLogin(Customizer.withDefaults());
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // TODO: use the properties file
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); //TODO: use HttpMethod.values() ?
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -128,7 +147,7 @@ public class AuthorizationSecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource){
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
 
@@ -158,14 +177,12 @@ public class AuthorizationSecurityConfig {
     }
 
     private KeyPair generateKeyPair() {
-        KeyPair keyPair;
         try {
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
-            keyPair = generator.generateKeyPair();
+            return generator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return keyPair;
     }
 }
