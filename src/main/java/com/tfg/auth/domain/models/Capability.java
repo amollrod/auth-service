@@ -4,6 +4,9 @@ package com.tfg.auth.domain.models;
  * Enum representing system-level permissions.
  */
 public enum Capability {
+    // System capabilities
+    VIEW_CAPABILITIES("Allow system capabilities view"),
+
     // User capabilities
     CREATE_USER("Allow user creation"),
     UPDATE_USER("Allow user update"),

@@ -35,8 +35,8 @@ public class RoleController {
         return ResponseEntity.ok(roleService.updateRole(name, request));
     }
 
-    @PatchMapping("/{name}/capabilities/add")
     @PreAuthorize("hasAuthority('UPDATE_ROLE')")
+    @PatchMapping("/{name}/capabilities/add")
     public ResponseEntity<RoleResponse> addCapability(
             @PathVariable String name,
             @RequestParam Capability capability
@@ -44,8 +44,8 @@ public class RoleController {
         return ResponseEntity.ok(roleService.addCapability(name, capability));
     }
 
-    @PatchMapping("/{name}/capabilities/remove")
     @PreAuthorize("hasAuthority('UPDATE_ROLE')")
+    @PatchMapping("/{name}/capabilities/remove")
     public ResponseEntity<RoleResponse> removeCapability(
             @PathVariable String name,
             @RequestParam Capability capability
@@ -53,8 +53,8 @@ public class RoleController {
         return ResponseEntity.ok(roleService.removeCapability(name, capability));
     }
 
-    @PatchMapping("/{name}/capabilities/clear")
     @PreAuthorize("hasAuthority('UPDATE_ROLE')")
+    @PatchMapping("/{name}/capabilities/clear")
     public ResponseEntity<RoleResponse> clearCapabilities(@PathVariable String name) {
         return ResponseEntity.ok(roleService.clearCapabilities(name));
     }
