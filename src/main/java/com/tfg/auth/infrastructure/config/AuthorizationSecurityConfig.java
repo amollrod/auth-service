@@ -62,6 +62,9 @@ public class AuthorizationSecurityConfig {
     @Value("${server.port}")
     private int serverPort;
 
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
     @Bean
     @Order(1)
     public SecurityFilterChain authSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -100,12 +103,8 @@ public class AuthorizationSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // TODO: use the properties file
-        configuration.setAllowedMethods(
-                Arrays.stream(HttpMethod.values())
-                        .map(HttpMethod::name)
-                        .toList()
-        );
+        configuration.setAllowedOrigins(List.of(allowedOrigins));
+        configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
