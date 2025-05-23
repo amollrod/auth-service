@@ -32,7 +32,7 @@ public class DataSeeder {
     private final String ADMIN_ROLE_NAME = "ADMIN_ROLE";
     private final String USER_ROLE_NAME = "USER_ROLE";
     private final String ADMIN_USER_EMAIL = "admin@gmail.com";
-    private final String ADMIN_USER_PASSWORD = "admin";
+    private final String ADMIN_USER_PASSWORD = "amollrod";
 
     @EventListener(ApplicationReadyEvent.class)
     public void seedData() {
