@@ -53,6 +53,9 @@ public class AuthorizationSecurityConfig {
     @Value("${auth.client.redirect-uri}")
     private String redirectUri;
 
+    @Value("${auth.client.callback-redirect-uri}")
+    private String callbackRedirectUri;
+
     @Value("${auth.client.silent-redirect-uri}")
     private String silentRedirectUri;
 
@@ -138,8 +141,9 @@ public class AuthorizationSecurityConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri(redirectUri)
+                .redirectUri(callbackRedirectUri)
                 .redirectUri(silentRedirectUri)
+                .postLogoutRedirectUri(redirectUri)
                 .scope("openid")
                 .scope("read")
                 .scope("write")
