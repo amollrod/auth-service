@@ -1,6 +1,7 @@
 package com.tfg.auth.application.exceptions;
 
 import com.tfg.auth.domain.exceptions.*;
+import com.tfg.auth.infrastructure.exceptions.KeyGenerationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> handleBadRequest(RuntimeException ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex, request);
+    }
+
+    @ExceptionHandler(KeyGenerationException.class)
+    public ResponseEntity<?> handleKeyGeneration(KeyGenerationException ex, HttpServletRequest request) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex, request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
