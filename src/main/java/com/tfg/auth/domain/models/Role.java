@@ -36,8 +36,10 @@ public class Role {
     }
 
     public void setCapabilities(Set<Capability> newCapabilities) {
-        if (newCapabilities.isEmpty())
+        if (newCapabilities.isEmpty()) {
             clearCapabilities();
+            return;
+        }
         this.capabilities = EnumSet.copyOf(newCapabilities);
     }
 }
