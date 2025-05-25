@@ -6,12 +6,10 @@ import com.tfg.auth.domain.models.Capability;
 import com.tfg.auth.domain.models.Role;
 import com.tfg.auth.domain.ports.RoleRepositoryPort;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 
-@Service
 @RequiredArgsConstructor
 public class RoleDomainService {
 

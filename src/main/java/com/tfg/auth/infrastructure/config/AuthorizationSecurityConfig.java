@@ -5,12 +5,12 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.tfg.auth.infrastructure.adapters.security.MongoUserDetailsService;
+import com.tfg.auth.infrastructure.exceptions.KeyGenerationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,7 +42,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,23 +49,28 @@ import java.util.UUID;
 @Slf4j
 public class AuthorizationSecurityConfig {
 
-    @Value("${auth.client.redirect-uri}")
-    private String redirectUri;
+    private final String redirectUri;
+    private final String callbackRedirectUri;
+    private final String silentRedirectUri;
+    private final String issuerHost;
+    private final int serverPort;
+    private final String allowedOrigins;
 
-    @Value("${auth.client.callback-redirect-uri}")
-    private String callbackRedirectUri;
-
-    @Value("${auth.client.silent-redirect-uri}")
-    private String silentRedirectUri;
-
-    @Value("${auth.issuer.host}")
-    private String issuerHost;
-
-    @Value("${server.port}")
-    private int serverPort;
-
-    @Value("${cors.allowed-origins}")
-    private String allowedOrigins;
+    public AuthorizationSecurityConfig(
+        @Value("${auth.client.redirect-uri}") String redirectUri,
+        @Value("${auth.client.callback-redirect-uri}") String callbackRedirectUri,
+        @Value("${auth.client.silent-redirect-uri}") String silentRedirectUri,
+        @Value("${auth.issuer.host}") String issuerHost,
+        @Value("${server.port}") int serverPort,
+        @Value("${cors.allowed-origins}") String allowedOrigins
+    ) {
+        this.redirectUri = redirectUri;
+        this.callbackRedirectUri = callbackRedirectUri;
+        this.silentRedirectUri = silentRedirectUri;
+        this.issuerHost = issuerHost;
+        this.serverPort = serverPort;
+        this.allowedOrigins = allowedOrigins;
+    }
 
     @Bean
     @Order(1)
@@ -195,7 +199,7 @@ public class AuthorizationSecurityConfig {
             generator.initialize(2048);
             return generator.generateKeyPair();
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new KeyGenerationException(e);
         }
     }
 }

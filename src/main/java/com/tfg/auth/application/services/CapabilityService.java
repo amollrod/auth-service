@@ -2,14 +2,12 @@ package com.tfg.auth.application.services;
 
 import com.tfg.auth.application.dto.CapabilityResponse;
 import com.tfg.auth.application.mapper.CapabilityMapper;
-import com.tfg.auth.domain.models.Capability;
 import com.tfg.auth.domain.services.CapabilityDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor

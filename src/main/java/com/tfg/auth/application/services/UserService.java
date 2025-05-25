@@ -7,30 +7,35 @@ import com.tfg.auth.application.mapper.UserMapper;
 import com.tfg.auth.domain.models.AppUser;
 import com.tfg.auth.domain.services.UserDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserDomainService userDomainService;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse createUser(CreateUserRequest request) {
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
         AppUser user = userDomainService.createUser(
                 request.getEmail(),
-                request.getPassword(),
+                encodedPassword,
                 request.getRoles()
         );
         return UserMapper.toResponse(user);
     }
 
     public UserResponse updateUser(String email, UpdateUserRequest request) {
+        String encodedPassword = request.getPassword() != null && !request.getPassword().isBlank()
+                ? passwordEncoder.encode(request.getPassword())
+                : null;
         AppUser updated = userDomainService.updateUser(
                 email,
-                request.getPassword(),
+                encodedPassword,
                 request.isEnabled(),
                 request.getRoles()
         );
@@ -44,7 +49,7 @@ public class UserService {
     public List<UserResponse> getAllUsers() {
         return userDomainService.getAllUsers().stream()
                 .map(UserMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public UserResponse getUser(String email) {
