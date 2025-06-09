@@ -1,6 +1,6 @@
 # auth-service
 
-[![Build](https://github.com/amollrod/package-tracking-service/actions/workflows/pipeline.yml/badge.svg)](https://github.com/amollrod/package-tracking-service/actions/workflows/pipeline.yml)
+[![Build](https://github.com/amollrod/auth-service/actions/workflows/pipeline.yml/badge.svg)](https://github.com/amollrod/auth-service/actions/workflows/pipeline.yml)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![TFG Document License: CC BY-NC 3.0 + GNU FDL 1.3](https://img.shields.io/badge/TFG%20License-CC%20BY--NC%203.0%20%2B%20GNU%20FDL%201.3-blue)](https://creativecommons.org/licenses/by-nc/3.0/es/)
 
